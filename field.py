@@ -16,39 +16,27 @@ class Row:
             for i in range(4, positon, -1):
                 self.slots[i] = self.slots[i-1]
         self.slots[positon] = object
+        self.size+=1
         
 class Field:
     def __init__(self):
-        self.player1_row = Row()
-        self.player2_row = Row()
+        self.player_rows = [None,Row(),Row()]
         self.front_row = Row()
         self.front_control = None   # None, 1 or 2
     def __str__(self,current_player:int):
         result= ""
         boarder_str="=================================================\n"
         thin_boarder_str="-----------------------------------------------\n"
-        if current_player==2:
-            result+=str(self.player1_row)+"\n"
-            if self.front_control==1:
-                result==str(self.front_row)+"\n"
-                result+=thin_boarder_str
-            elif self.front_control==2:
-                result+=thin_boarder_str
-                result+=str(self.front_row)+"\n"
-            else:
-                result+=boarder_str
-            result+=str(self.player2_row)+"\n"
-        elif current_player==1:
-            result+=str(self.player2_row)+"\n"
-            if self.front_control==1:
-                result+=thin_boarder_str
-                result+=str(self.front_row)+"\n"
-            elif self.front_control==2:
-                result+=str(self.front_row)+"\n"
-            else:
-                result+=boarder_str
-            result+=str(self.player1_row)+"\n"
+        opposite_player=3-current_player
+        result+=str(self.player_rows[opposite_player])+"\n"
+        if self.front_control==opposite_player:
+            result+=str(self.front_row)+"\n"
+            result+=thin_boarder_str
+        elif self.front_control==current_player:
+            result+=thin_boarder_str
+            result+=str(self.front_row)+"\n"
         else:
-            raise ValueError("Invalid current player")
+            result+=boarder_str
+        result+=str(self.player_rows[current_player])+"\n"
         return result
     
