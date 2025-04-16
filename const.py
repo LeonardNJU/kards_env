@@ -2,7 +2,7 @@ from enum import Enum
 
 class Nation(Enum):
     USA = "USA"
-    SOVIET = "SOVIET UNION"
+    SOVIET = "SOVIET"
     
 class CardType(Enum):
     UNIT= "UNIT"
@@ -11,3 +11,7 @@ class CardType(Enum):
 class UnitType(Enum):
     INFANTRY = "INFANTRY"
     TANK = "TANK"
+
+class DamageSource(Enum):
+    DIRECT = "DIRECT"
+    FATIQUE = "FATIGUE"
