@@ -21,14 +21,14 @@ class Card:
         self.type = type
         self.nation = nation
 
-    def play(self, field, player: int, args: List[str]):
+    def play(self, game, player: int, args: List[str]):
         parsed = []
         for i, param in enumerate(self.meta.params):
             try:
                 parsed.append(param.type(args[i]))
             except:
                 raise ValueError(f"参数 {param.name} 类型错误，应为 {param.type.__name__}，收到：{args[i]}")
-        self.meta.func(field, player, *parsed)
+        self.meta.func(game, player, *parsed)
 
     def __str__(self):
         return f"{self.cost}K {self.name} {self.type.value} {self.nation.value}"

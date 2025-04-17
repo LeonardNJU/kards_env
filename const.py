@@ -15,3 +15,7 @@ class UnitType(Enum):
 class DamageSource(Enum):
     DIRECT = "DIRECT"
     FATIQUE = "FATIGUE"
+
+class SpecialAbility(Enum):
+    BLITZ="BLITZ"
+    ATKWITHMOVE="ATK_WITH_MOVE"

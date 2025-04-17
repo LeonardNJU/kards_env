@@ -1,3 +1,4 @@
+from operator import is_
 from const import UnitType
 from object import Object
 from units.unit import Unit
@@ -25,7 +26,24 @@ class Row:
                 position -= 1
         self.slots[position] = object
         self.size+=1
-        
+    def remove(self, position:int):
+        """
+        remove a unit from the row
+        """
+        assert position in range(5), "Position out of range"
+        if self.slots[position] is None:
+            raise ValueError("No unit in the position")
+        self.slots[position] = None
+        self.size-=1
+        if position<4 and self.slots[position+1] is not None:
+            for i in range(position, 4):
+                self.slots[i] = self.slots[i+1]
+                
+    def is_full(self):
+        return self.slots[4] is not None
+    def is_empty(self):
+        return self.slots[0] is None
+    
 class Field:
     def __init__(self):
         self.player_rows = [None,Row(),Row()]
@@ -47,37 +65,69 @@ class Field:
             result+=boarder_str
         result+=f"s  {self.player_rows[current_player]}\n"
         return result
-    def move_atk(self, current_player:int,_from:str,_to:str):
+
+    def get_self_unit(self, player_id:int, position:str)->Unit:
         """
-        Move and attack.
+        get unit for player
         """
-        # get object
-        unit:Unit=None
-        if _from[0]=='s':
-            unit=self.player_rows[current_player].slots[int(_from[1])]
-        elif _from[0]=='f':
-            if not self.front_control==current_player:
+        assert player_id in [1,2], "Invalid player id"
+        assert position[0] in ['s','f'] and int(position[1]) in range(5), "Invalid position"
+        if position[0]=='s':
+            position=int(position[1])
+            unit=self.player_rows[player_id].slots[position]
+        elif position[0]=='f':
+            if self.front_control==player_id:
+                position=int(position[1])
+                unit=self.front_row.slots[position]
+            else:
                 raise ValueError("You don't control the front row")
-            unit=self.front_row.slots[int(_from[1])]
-        if unit is None:
+        else:
+            raise ValueError("Invalid position")
+        if unit is None or isinstance(unit, Unit)==False:
             raise ValueError("No unit in the position")
+        return self.player_rows[player_id].slots[position]
+    
+    def move_to_front(self, game, player_id:int, _from:str, position:int)->bool:
+        '''
+        move into uncontrolled front row or self controlled front row
+        position checked in 1-5, not checked if line to join is full
+        '''
+        # check if able to move
+        if self.front_row.is_full():
+            raise ValueError("Front row is full")
+        unit=self.get_self_unit(player_id, _from)
+        if game.players[player_id].mana<unit.oil:
+            raise ValueError("Not enough oil")
 
-        # if unit.oil>
-        # if unit.is_frozen(): 
-
-        # check to position
-        opposite=3-current_player
-        # attack
-        if _to[0]=='e' or (_to[0]=='f' and self.front_controls==opposite):    # attack enemy
-            target=None
-            if _to[0]=='e':
-                target=self.player_rows[opposite].slots[int(_to[1])]
-            elif _to[0]=='f':
-                target=self.front_row.slots[int(_to[1])]
-            if target is None:
-                raise ValueError("No attacking target in the position")
-
-            # check if able to attack
-            if unit.type==UnitType.INFANTRY:
-                pass
-            # unit.attack(target)
+        # check if unit can move
+        unit.move_to_front(game)
+        
+        # now control field
+        self.front_row.join(unit, position)
+        self.player_rows[player_id].remove(int(_from[1]))
+        game.players[player_id].mana-=unit.oil
+    
+    def unit_attack(self, player_id:int, _from:str, _to:str)->bool:
+        pass
+    
+    def move_atk(self,game,player_id:int, _from:str, _to:str):
+        """
+        get target for player
+        """
+        assert player_id in [1,2], "Invalid player id"
+        assert _to[0] in ['e','f'] and int(_to[1]) in range(5), "Invalid position"
+        
+        if _to[0]=='e':
+            target=self.player_rows[player_id].slots[int(_to[1])]  # attack
+        elif _to[0]=='f':
+            if self.front_control==player_id or self.front_control==None:
+                self.move_to_front(game,player_id, _from, int(_to[1]))
+            else:
+                target=self.front_row.slots[int(_to[1])]           # attack
+        else:
+            raise ValueError("Invalid position")
+        
+        if target is None:
+            raise ValueError("No attacking target in the position")
+        
+        self.unit_attack(player_id, _from, _to)

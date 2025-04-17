@@ -1,3 +1,5 @@
+from re import S
+from turtle import position
 from deck import Deck
 from hand import Hand
 from order import Order
@@ -57,7 +59,7 @@ class Player:
             print("Not enough mana")
             return False
         try:
-            card.play(game.field, self.number, *args)
+            card.play(game, self.number, *args)
             self.mana-=card.cost
             return True
         except ValueError as e:
@@ -67,6 +69,7 @@ class Player:
             print(e)
             return False
 
+    
     def turn(self,game):
         from game import Game
         game:Game
@@ -80,12 +83,23 @@ class Player:
                 try:
                     if self.play_card(game,self.hand[order.card_idx],order.args):
                         self.hand.pop(order.card_idx)
-                    # game.paint()
                 except IndexError as e:
                     print(e)
                     continue
+                except Exception as e:
+                    print(e)
+                    continue
+                
             elif order.type==Order.MOVE_ATK:
-                pass    # TODO
+                try:
+                    game.field.move_atk(game,self.number, order._from, order._to)
+                except ValueError as e:
+                    print(e)
+                    continue
+                except Exception as e:
+                    print(e)
+                    continue
+                
             elif order.type==Order.END_TURN:
                 print("End turn")
                 break

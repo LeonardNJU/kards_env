@@ -1,5 +1,5 @@
+from __future__ import annotations
 from field import Field
-from order import Order
 from player import Player
 from units.card_loader import load_cards_from_yaml
 
@@ -64,7 +64,7 @@ class Game:
                 assert len(reschedule)<=len(self.players[player_id].hand)
                 assert all([i in range(len(self.players[player_id].hand)) for i in reschedule])
                 for i in reschedule[::-1]:
-                    # check: not sure it can pop right card.
+                    # TODO: check: not sure it can pop right card.
                     card=self.players[player_id].hand.pop(i)
                     self.players[player_id].deck.random_add(card)
 

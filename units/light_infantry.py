@@ -1,4 +1,4 @@
-from const import UnitType
+from const import SpecialAbility, UnitType
 from units.unit import Unit
 
 
@@ -8,4 +8,4 @@ class LightInfantry(Unit):
     """
 
     def __init__(self, HP: int=1, attack: int=1,oil=0, defense: int=0):
-        super().__init__("轻步兵", UnitType.INFANTRY, HP, attack, oil, defense)
+        super().__init__("轻步兵", UnitType.INFANTRY, HP, attack, oil, defense,[SpecialAbility.BLITZ, SpecialAbility.ATKWITHMOVE])
