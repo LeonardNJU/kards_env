@@ -5,7 +5,7 @@ class Nation(Enum):
     SOVIET = "SOVIET"
     
 class CardType(Enum):
-    UNIT= "UNIT"
+    INFANTRY = "INFANTRY"
     INSTRUCTION= "INSTRUCTION"
 
 class UnitType(Enum):

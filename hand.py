@@ -23,6 +23,8 @@ class Hand:
         return len(self.cards)
     def is_full(self):
         return len(self)>=self.MAX_HAND_SIZE
+    def is_empty(self):
+        return len(self)==0
     def draw(self,deck:Deck=None):
         """
         Draw a card from the deck and add it to the hand.
@@ -49,3 +51,13 @@ class Hand:
         """
         assert index in range(len(self.cards)), "Index out of range"
         return self.cards.pop(index)
+
+    '''
+    copy a card to test running effect but not pop
+    '''
+    def __getitem__(self, index:int):
+        """
+        Get a card from the hand.
+        """
+        assert index in range(len(self.cards)), "Invalid card index"
+        return self.cards[index]

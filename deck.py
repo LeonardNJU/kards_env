@@ -3,7 +3,7 @@ from card import Card
 
 class Deck:
     def __init__(self,cards:list[Card]):
-        assert len(cards)==40
+        assert len(cards)==39
         self.cards = cards
         self.shuffle()
         

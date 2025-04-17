@@ -8,8 +8,10 @@ from card import Card
 class Player:
     MAX_NUTURAL_MANA=12
     MAX_BOUND_MANA=24
-    def __init__(self, name, cards:list[Card]):
+    def __init__(self, name, number, cards:list[Card]):
         self.name=name
+
+        self.number=number
         
         self.deck = Deck(cards)
         self.hand :Hand = Hand(self)
@@ -24,13 +26,7 @@ class Player:
         
         self.fatigue=0
     def draw_card(self):
-        if len(self.deck)==0:
-            # into fatigue
-            self.fatigue+=1
-            self.HQ.HP.hurt(self.fatigue)
-            return None
-        card=self.deck.pop(0)
-        return card
+        self.hand.draw()
     def lose(self):
         print(self.name+" lose.")
         exit(0)
@@ -51,4 +47,48 @@ class Player:
         if self.max_mana<self.MAX_NUTURAL_MANA:
             self.max_mana+=1
         self.mana=self.max_mana
-        
+
+    def play_card(self, game,card:Card,args)->bool:
+        '''
+        play a card from hand
+        return True if success
+        '''
+        if card.cost>self.mana:
+            print("Not enough mana")
+            return False
+        try:
+            card.play(game.field, self.number, *args)
+            self.mana-=card.cost
+            return True
+        except ValueError as e:
+            print(e)
+            return False
+        except Exception as e:
+            print(e)
+            return False
+
+    def turn(self,game):
+        from game import Game
+        game:Game
+        while True:
+            game.paint()
+            order=self.accept_order()
+            if order is None:
+                continue
+
+            if order.type==Order.PLAY_CARD:
+                try:
+                    if self.play_card(game,self.hand[order.card_idx],order.args):
+                        self.hand.pop(order.card_idx)
+                    # game.paint()
+                except IndexError as e:
+                    print(e)
+                    continue
+            elif order.type==Order.MOVE_ATK:
+                pass    # TODO
+            elif order.type==Order.END_TURN:
+                print("End turn")
+                break
+            else:
+                print("Invalid order")
+                continue

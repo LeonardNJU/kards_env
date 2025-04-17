@@ -1,0 +1,5 @@
+- name: 轻步兵
+  cost: 1
+  type: INFANTRY
+  nation: SOVIET
+  effect: light_infantry

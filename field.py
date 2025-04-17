@@ -9,15 +9,21 @@ class Row:
         self.size=0
     def __str__(self):
         return "\t".join([str(slot) for slot in self.slots if slot])
-    def join(self, object:Object, positon:int=None):
-        if positon is None:
-            positon = self.size
+    def join(self, object:Object, position:int=None):
+        """
+        join a unit to the row, fall to left
+        """
+        if position is None:
+            position = self.size
         assert self.size<=5, "Row is full"
-        assert positon in range(5), "Position out of range"
-        if self.slots[positon] is not None:
-            for i in range(4, positon, -1):
+        assert position in range(5), "Position out of range"
+        if self.slots[position] is not None:
+            for i in range(4, position, -1):
                 self.slots[i] = self.slots[i-1]
-        self.slots[positon] = object
+        else:
+            while position>0 and self.slots[position - 1] is None:
+                position -= 1
+        self.slots[position] = object
         self.size+=1
         
 class Field:

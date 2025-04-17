@@ -1,35 +1,39 @@
+from dataclasses import dataclass
+from typing import Callable, List
 from const import CardType, Nation
-from field import Field
-from units.light_infantry import LightInfantry
 
+@dataclass
+class ParamSpec:
+    name: str
+    type: type
+    description: str = ""
+
+@dataclass
+class EffectMeta:
+    func: Callable
+    params: List[ParamSpec]
 
 class Card:
-    def __init__(self, name, cost, effect, type:CardType, nation:Nation):
+    def __init__(self, name: str, cost: int, meta: EffectMeta, type: CardType, nation: Nation):
         self.name = name
         self.cost = cost
-        self.effect = effect
+        self.meta = meta
         self.type = type
         self.nation = nation
-    def play(self, field:Field, player:int, position,**kwargs):
-        """
-        Play the card.
-        """
-        self.effect(field, player, position,**kwargs)
+
+    def play(self, field, player: int, args: List[str]):
+        parsed = []
+        for i, param in enumerate(self.meta.params):
+            try:
+                parsed.append(param.type(args[i]))
+            except:
+                raise ValueError(f"参数 {param.name} 类型错误，应为 {param.type.__name__}，收到：{args[i]}")
+        self.meta.func(field, player, *parsed)
+
     def __str__(self):
-        return str(self.cost)+"K "+self.name+" "+str(self.type.value)+" "+str(self.nation.value)
+        return f"{self.cost}K {self.name} {self.type.value} {self.nation.value}"
+    def describe(self):
+        print(self)
+        for p in self.meta.params:
+            print(f"  - {p.name} ({p.type.__name__})：{p.description}")
 
-def light_infantry_card(field:Field, player:int, position,**kwargs):
-    """
-    拉一张轻步兵至指定位置
-    """
-    # field.join(LightInfantry(), player, position)
-    field.player_rows[player].join(LightInfantry(),position)
-
-# cards pool
-cards_pool=[
-    Card(name="轻步兵",
-         cost=1,
-         effect=light_infantry_card,
-         type=CardType.UNIT,
-         nation=Nation.SOVIET),
-]

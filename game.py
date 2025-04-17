@@ -1,7 +1,7 @@
-from traitlets import This
 from field import Field
 from order import Order
 from player import Player
+from units.card_loader import load_cards_from_yaml
 
 
 class Game:
@@ -20,19 +20,27 @@ class Game:
         for _ in range(5): self.players[2].hand.draw()
         
     def __str__(self):
-        result= ""
+        result= f"Turn {self.turn}\n"
         result+=self.players[self.rival_player_id].name+"\tCmd pts:["+str(self.players[self.rival_player_id].mana)+"/"+str(self.players[self.rival_player_id].max_mana)+"]\t"+"Cards: "+str(len(self.players[self.rival_player_id].hand))+"/"+str(len(self.players[self.rival_player_id].deck))+" cards\n\n"
         result+=self.field.__str__(self.active_player_id)+"\n"
         result+=self.players[self.active_player_id].name+"\tCmd pts:["+str(self.players[self.active_player_id].mana)+"/"+str(self.players[self.active_player_id].max_mana)+"]\t"+"Hands: "+str(len(self.players[self.active_player_id].hand))+"/"+str(len(self.players[self.active_player_id].deck))+" cards\n"
         # hands, opponent hands, deck remains
         result+="\nHands: \n"
-        result+=f"{self.players[self.active_player_id].hand}\n"
+        if self.players[self.active_player_id].hand.is_empty():
+            result+="Empty\n"
+        else:
+            result+=f"{self.players[self.active_player_id].hand}\n"
         return result
     def paint(self):
         '''
         paint the game
         '''
+        BOARD_WIDTH=40
+        BAR="#"*BOARD_WIDTH
+        print(BAR)
         print(self)
+        print(BAR)
+        print()
         
     def reschedule_phase(self,player_id:int):
         '''
@@ -90,49 +98,26 @@ class Game:
         
         # draw card
         if not (self.turn==1 and self.active_player_id==1):
+            print("Draw a card")
             player.draw_card()
             
         self.paint()
-        
+
+    def turn_end_phase(self, player_id:int):
+        '''
+        turn end
+        '''
+        print("Turn end")
+
     def turn_phase(self, active_player_id:int):
         self.turn_starting_phase(active_player_id)
-        
-        player=self.players[self.active_player_id]
-        
-        '''
-        turn mid
-        '''
-        # move, attack, play card
-        while True:
-            order=player.accept_order()
-            # process order
-            if order is None:
-                continue
-            elif order.type==Order.PLAY_CARD:
-                if order.card_id>=len(player.hand):
-                    print("Invalid card id")
-                    continue
-                card=player.hand.pop(order.card_id)
-                if card.cost>player.mana:
-                    print("Not enough mana")
-                    player.hand.append(card)
-                    continue
-                player.mana-=card.cost
-                card.play(self.field, player, order.args)
-                player.played.append(card)
-            elif order.type==Order.MOVE_ATK:
-                pass
-                
-            break
-            
-        
-        # turn end
-        
-        
+        self.players[self.active_player_id].turn(self)
+        self.turn_end_phase(active_player_id)
+
 def main(pl1,pl2):
     game = Game([pl1, pl2])
-    game.reschedule_phase(1)
-    game.reschedule_phase(2)
+    # game.reschedule_phase(1)
+    # game.reschedule_phase(2)
     while True:
         game.turn+=1
         game.turn_phase(1)
@@ -141,8 +126,9 @@ def main(pl1,pl2):
         
 if __name__=="__main__":
     # 先把卡组创建写这里
-    from card import cards_pool
-    player1=Player("Pl1",[cards_pool[0]]*40)
-    player2=Player("Pl2",[cards_pool[0]]*40)
+    cards = load_cards_from_yaml("units/cards.yaml")
+
+    player1=Player("Pl1",1, [cards[0]]*39)
+    player2=Player("Pl2",2, [cards[0]]*39)
     
     main(player1,player2)

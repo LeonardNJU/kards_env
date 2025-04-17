@@ -17,7 +17,7 @@ class Order:
         if command == Order.PLAY_CARD:
             self.type=Order.PLAY_CARD
             assert '#' in args[0] and args[0].index('#')==0
-            self.card_id=int(args[0][1:])
+            self.card_idx=int(args[0][1:])
             self.args=args[1:]
         # move and attack: mv from(line,pos) to（line,pos)
         elif command== Order.MOVE_ATK:
