@@ -1,5 +1,6 @@
 from operator import is_
-from const import UnitType
+from re import A
+from const import SpecialAbility, UnitType
 from object import Object
 from units.unit import Unit
 
@@ -86,6 +87,26 @@ class Field:
         if unit is None or isinstance(unit, Unit)==False:
             raise ValueError("No unit in the position")
         return self.player_rows[player_id].slots[position]
+    def get_enemy_object(self, player_id:int, position:str)->Object:
+        """
+        get Object for player
+        """
+        assert player_id in [1,2], "Invalid player id"
+        assert position[0] in ['e','f'] and int(position[1]) in range(5), "Invalid position"
+        if position[0]=='e':
+            position=int(position[1])
+            unit=self.player_rows[3-player_id].slots[position]
+        elif position[0]=='f':
+            if self.front_control!=player_id:
+                position=int(position[1])
+                unit=self.front_row.slots[position]
+            else:
+                raise ValueError("Please selected enemy unit")
+        else:
+            raise ValueError("Invalid position")
+        if unit is None:
+            raise ValueError("No unit in the position")
+        return self.player_rows[player_id].slots[position]
     
     def move_to_front(self, game, player_id:int, _from:str, position:int)->bool:
         '''
@@ -107,8 +128,43 @@ class Field:
         self.player_rows[player_id].remove(int(_from[1]))
         game.players[player_id].mana-=unit.oil
     
-    def unit_attack(self, player_id:int, _from:str, _to:str)->bool:
-        pass
+    def unit_attack(self, game,player_id:int, _from:str, _to:str)->bool:
+        '''
+        first to check if unit can attack,
+        then attack.
+        '''
+        unit=self.get_self_unit(player_id, _from)
+        if game.players[player_id].mana<unit.oil:
+            raise ValueError("Not enough oil")
+        
+        # check if able to attack
+        unit.able_to_atk()
+        if unit.type in [UnitType.INFANTRY]:
+            # check attacking range, including distance and guard and smoke
+            # distance
+            if (_from[0],_to[0]) not in [('s','f'),('f','e')]:
+                raise ValueError("Attacking Range too short")
+            # guard
+            enemy=self.get_enemy_object(player_id, _to)
+            if not isinstance(enemy,Unit) or (isinstance(enemy,Unit) and SpecialAbility.GUARD not in enemy.ability):
+                pos=int(_to[1])
+                if pos>0:
+                    enemy_left=self.get_enemy_object(player_id,_to[0]+str(pos-1))
+                    if isinstance(enemy_left, Unit) and SpecialAbility.GUARD in enemy.ability:
+                        raise ValueError("Object has been guarded")
+                if pos<4:
+                    enemy_right=self.get_enemy_object(player_id,_to[0]+str(pos+1))
+                    if isinstance(enemy_right, Unit) and SpecialAbility.GUARD in enemy.ability:
+                        raise ValueError("Object has been guarded")
+            # smoke
+            if isinstance(enemy,Unit) and SpecialAbility.SMOKE in enemy.ability:
+                raise ValueError("Object has been smoked")
+        # TODO: other type
+        
+        # can attack
+        unit.attack(self.get_enemy_object(player_id, _to))
+        game.players[player_id].mana-=unit.oil
+        
     
     def move_atk(self,game,player_id:int, _from:str, _to:str):
         """
@@ -130,4 +186,4 @@ class Field:
         if target is None:
             raise ValueError("No attacking target in the position")
         
-        self.unit_attack(player_id, _from, _to)
+        self.unit_attack(game, player_id, _from, _to)
