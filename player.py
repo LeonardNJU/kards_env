@@ -6,7 +6,9 @@ from card import Card
 
 
 class Player:
-    def __init__(self, name, cards:[Card]):
+    MAX_NUTURAL_MANA=12
+    MAX_BOUND_MANA=24
+    def __init__(self, name, cards:list[Card]):
         self.name=name
         
         self.deck = Deck(cards)
@@ -45,3 +47,8 @@ class Player:
     def inc_fatigue(self):
         self.fatigue+=1
         self.HQ.hurt(self.fatigue)
+    def inc_mana(self):
+        if self.max_mana<self.MAX_NUTURAL_MANA:
+            self.max_mana+=1
+        self.mana=self.max_mana
+        

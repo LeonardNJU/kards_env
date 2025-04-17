@@ -10,23 +10,23 @@ class Game:
         self.field = Field()
         
         self.players: list[Player] = [None, players[0], players[1]]
-        self.current_player = 1
-        self.opponent = 2
+        self.active_player_id = 1
+        self.rival_player_id = 2
         
-        self.field.player_rows[self.current_player].join(self.players[self.current_player].HQ)
-        self.field.player_rows[self.opponent].join(self.players[self.opponent].HQ)
+        self.field.player_rows[self.active_player_id].join(self.players[self.active_player_id].HQ)
+        self.field.player_rows[self.rival_player_id].join(self.players[self.rival_player_id].HQ)
         
         for _ in range(4): self.players[1].hand.draw()
         for _ in range(5): self.players[2].hand.draw()
         
     def __str__(self):
         result= ""
-        result+=self.players[self.opponent].name+"\tCmd pts:["+str(self.players[self.opponent].mana)+"/"+str(self.players[self.opponent].max_mana)+"]\t"+"Cards: "+str(len(self.players[self.opponent].hand))+"/"+str(len(self.players[self.opponent].deck))+" cards\n\n"
-        result+=self.field.__str__(self.current_player)+"\n"
-        result+=self.players[self.current_player].name+"\tCmd pts:["+str(self.players[self.current_player].mana)+"/"+str(self.players[self.current_player].max_mana)+"]\t"+"Hands: "+str(len(self.players[self.current_player].hand))+"/"+str(len(self.players[self.current_player].deck))+" cards\n"
+        result+=self.players[self.rival_player_id].name+"\tCmd pts:["+str(self.players[self.rival_player_id].mana)+"/"+str(self.players[self.rival_player_id].max_mana)+"]\t"+"Cards: "+str(len(self.players[self.rival_player_id].hand))+"/"+str(len(self.players[self.rival_player_id].deck))+" cards\n\n"
+        result+=self.field.__str__(self.active_player_id)+"\n"
+        result+=self.players[self.active_player_id].name+"\tCmd pts:["+str(self.players[self.active_player_id].mana)+"/"+str(self.players[self.active_player_id].max_mana)+"]\t"+"Hands: "+str(len(self.players[self.active_player_id].hand))+"/"+str(len(self.players[self.active_player_id].deck))+" cards\n"
         # hands, opponent hands, deck remains
         result+="\nHands: \n"
-        result+=f"{self.players[self.current_player].hand}\n"
+        result+=f"{self.players[self.active_player_id].hand}\n"
         return result
     def paint(self):
         '''
@@ -34,12 +34,12 @@ class Game:
         '''
         print(self)
         
-    def reschedule_phase(self,player:int):
+    def reschedule_phase(self,player_id:int):
         '''
         choose which card to be rescheduled
         '''
-        if self.current_player!=player:
-            self.current_player,self.opponent=self.opponent,self.current_player
+        if self.active_player_id!=player_id:
+            self.active_player_id,self.rival_player_id=self.rival_player_id,self.active_player_id
 
         print("Reschedule phase")
         self.paint()
@@ -53,15 +53,15 @@ class Game:
                 reschedule=list(set(reschedule))
                 reschedule.sort()
                 
-                assert len(reschedule)<=len(self.players[player].hand)
-                assert all([i in range(len(self.players[player].hand)) for i in reschedule])
+                assert len(reschedule)<=len(self.players[player_id].hand)
+                assert all([i in range(len(self.players[player_id].hand)) for i in reschedule])
                 for i in reschedule[::-1]:
                     # check: not sure it can pop right card.
-                    card=self.players[player].hand.pop(i)
-                    self.players[player].deck.random_add(card)
+                    card=self.players[player_id].hand.pop(i)
+                    self.players[player_id].deck.random_add(card)
 
                 for _ in range(len(reschedule)):
-                    self.players[player].hand.draw()
+                    self.players[player_id].hand.draw()
                 break       # finish reschedule phase
 
             except:
@@ -70,22 +70,38 @@ class Game:
         print("Reschedule phase end")
         self.paint()
             
-        
-    def turn_phase(self, player:int):
-        if self.current_player!=player:
-            self.current_player,self.opponent=self.opponent,self.current_player
+    def turn_starting_phase(self, player_id:int):
+        '''
+        turn starting phase
+        '''
+        # change active player
+        if self.active_player_id!=player_id:
+            self.active_player_id,self.rival_player_id=self.rival_player_id,self.active_player_id
+        player=self.players[self.active_player_id]
             
-        # turn start
-        if player.max_mana<12:
-            player.max_mana+=1
-        player.mana=player.max_mana
+        '''
+        turn start
+        '''
         
-        if not (self.turn==1 and self.current_player==1):
-            card=player.draw_card()
-            if card is not None:
-                player.hand.append(card)
+        print("Turn start")
         
-        # turn mid
+        # increase mana
+        player.inc_mana()
+        
+        # draw card
+        if not (self.turn==1 and self.active_player_id==1):
+            player.draw_card()
+            
+        self.paint()
+        
+    def turn_phase(self, active_player_id:int):
+        self.turn_starting_phase(active_player_id)
+        
+        player=self.players[self.active_player_id]
+        
+        '''
+        turn mid
+        '''
         # move, attack, play card
         while True:
             order=player.accept_order()
