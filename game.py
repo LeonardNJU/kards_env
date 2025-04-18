@@ -1,4 +1,6 @@
 from __future__ import annotations
+from HQ import HeadQuarters
+from const import Nation
 from field import Field
 from player import Player
 from units.card_loader import load_cards_from_yaml
@@ -108,6 +110,7 @@ class Game:
         turn end
         '''
         print("Turn end")
+        self.field.reset_all_unit()
 
     def turn_phase(self, active_player_id:int):
         self.turn_starting_phase(active_player_id)
@@ -128,7 +131,11 @@ if __name__=="__main__":
     # 先把卡组创建写这里
     cards = load_cards_from_yaml("units/cards.yaml")
 
-    player1=Player("Pl1",1, [cards[0]]*39)
-    player2=Player("Pl2",2, [cards[0]]*39)
+    hq1=HeadQuarters(Nation.USA)
+    hq2=HeadQuarters(Nation.USA)
+    player1=Player("Pl1",1,hq1, [cards[0]]*39)
+    player2=Player("Pl2",2,hq2, [cards[0]]*39)
+    hq1.set_player(player1)
+    hq2.set_player(player2)
     
     main(player1,player2)

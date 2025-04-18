@@ -10,7 +10,7 @@ from card import Card
 class Player:
     MAX_NUTURAL_MANA=12
     MAX_BOUND_MANA=24
-    def __init__(self, name, number, cards:list[Card]):
+    def __init__(self, name, number, HQ:HeadQuarters, cards:list[Card]):
         self.name=name
 
         self.number=number
@@ -21,7 +21,7 @@ class Player:
         self.discard :list[Card]= []
         self.played :list[Card]= []
         
-        self.HQ=HeadQuarters(self)
+        self.HQ=HQ
         
         self.mana=0
         self.max_mana=0

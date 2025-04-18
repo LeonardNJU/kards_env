@@ -24,6 +24,7 @@ class UnitType(Enum):
 class DamageSource(Enum):
     DIRECT = "DIRECT"
     FATIQUE = "FATIGUE"
+    UNITATK="UNIT_ATK"
 
 class SpecialAbility(Enum):
     BLITZ="BLITZ"

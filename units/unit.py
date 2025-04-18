@@ -1,4 +1,4 @@
-from const import SpecialAbility, UnitType
+from const import DamageSource, SpecialAbility, UnitType
 from object import Object
 
 
@@ -24,6 +24,10 @@ class Unit(Object):
         self.game=game
         self.owner=player
         self.putting_turn=game.turn
+        self.is_moved=False
+        self.have_attacked=0
+    
+    def reset(self):
         self.is_moved=False
         self.have_attacked=0
     
@@ -60,7 +64,7 @@ class Unit(Object):
         return True
     
     def attack(self, target:Object):
-        target.hurt(self.ATK, self)
+        target.hurt(self.ATK, DamageSource.UNITATK)
         if SpecialAbility.SHOCK not in self.ability and isinstance(target, Unit):
             self.hurt(target.ATK, target)
         self.have_attacked+=1

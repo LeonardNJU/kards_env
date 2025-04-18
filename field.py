@@ -53,6 +53,13 @@ class Row:
         return self.slots[4] is not None
     def is_empty(self):
         return self.slots[0] is None
+    def reset_all(self):
+        """
+        reset all unit in row
+        """
+        for unit in self.slots:
+            if isinstance(unit, Unit):
+                unit.reset()
     
 class Field:
     def __init__(self):
@@ -193,6 +200,7 @@ class Field:
         elif _to[0]=='f':
             if self.front_control==player_id or self.front_control==None:
                 self.move_to_front(game,player_id, _from, int(_to[1]))
+                return
             else:
                 target=self.front_row.slots[int(_to[1])]           # attack
         else:
@@ -219,3 +227,10 @@ class Field:
             if position==-1:
                 raise ValueError("FATAL! Unit not in player row")
             self.player_rows[player_id].remove(position)
+    def reset_all_unit(self):
+        """
+        reset all unit in field
+        """
+        self.player_rows[1].reset_all()
+        self.player_rows[2].reset_all()
+        self.front_row.reset_all()
