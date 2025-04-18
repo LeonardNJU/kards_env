@@ -20,5 +20,5 @@ def register_effect(name: str, params: List[ParamSpec]):
 def light_infantry_card(game, player: int, position: int):
     unit=LightInfantry()
     game.field.player_rows[player].join(unit, position)
-    unit.set_putting(player, game.turn)
+    unit.set_putting(game,player)
     

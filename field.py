@@ -40,6 +40,15 @@ class Row:
             for i in range(position, 4):
                 self.slots[i] = self.slots[i+1]
                 
+    def find_object(self, object:Object):
+        """
+        find the object in the row
+        """
+        for i in range(5):
+            if self.slots[i] == object:
+                return i
+        return -1
+    
     def is_full(self):
         return self.slots[4] is not None
     def is_empty(self):
@@ -86,7 +95,8 @@ class Field:
             raise ValueError("Invalid position")
         if unit is None or isinstance(unit, Unit)==False:
             raise ValueError("No unit in the position")
-        return self.player_rows[player_id].slots[position]
+        return unit
+    
     def get_enemy_object(self, player_id:int, position:str)->Object:
         """
         get Object for player
@@ -106,7 +116,7 @@ class Field:
             raise ValueError("Invalid position")
         if unit is None:
             raise ValueError("No unit in the position")
-        return self.player_rows[player_id].slots[position]
+        return unit
     
     def move_to_front(self, game, player_id:int, _from:str, position:int)->bool:
         '''
@@ -149,14 +159,20 @@ class Field:
             if not isinstance(enemy,Unit) or (isinstance(enemy,Unit) and SpecialAbility.GUARD not in enemy.ability):
                 pos=int(_to[1])
                 if pos>0:
-                    enemy_left=self.get_enemy_object(player_id,_to[0]+str(pos-1))
-                    if isinstance(enemy_left, Unit) and SpecialAbility.GUARD in enemy.ability:
-                        raise ValueError("Object has been guarded")
+                    try:    # may not exist
+                        enemy_left=self.get_enemy_object(player_id,_to[0]+str(pos-1))
+                        if isinstance(enemy_left, Unit) and SpecialAbility.GUARD in enemy.ability:
+                            raise ValueError("Object has been guarded")
+                    except ValueError as e:
+                        pass
                 if pos<4:
-                    enemy_right=self.get_enemy_object(player_id,_to[0]+str(pos+1))
-                    if isinstance(enemy_right, Unit) and SpecialAbility.GUARD in enemy.ability:
-                        raise ValueError("Object has been guarded")
-            # smoke
+                    try:    # may not exist
+                        enemy_right=self.get_enemy_object(player_id,_to[0]+str(pos+1))
+                        if isinstance(enemy_right, Unit) and SpecialAbility.GUARD in enemy.ability:
+                            raise ValueError("Object has been guarded")
+                    except ValueError as e:
+                        pass
+                # smoke
             if isinstance(enemy,Unit) and SpecialAbility.SMOKE in enemy.ability:
                 raise ValueError("Object has been smoked")
         # TODO: other type
@@ -165,7 +181,6 @@ class Field:
         unit.attack(self.get_enemy_object(player_id, _to))
         game.players[player_id].mana-=unit.oil
         
-    
     def move_atk(self,game,player_id:int, _from:str, _to:str):
         """
         get target for player
@@ -187,3 +202,20 @@ class Field:
             raise ValueError("No attacking target in the position")
         
         self.unit_attack(game, player_id, _from, _to)
+    
+    def remove_unit(self, player_id:int, unit:Unit):
+        """
+        remove unit from field
+        """
+        if unit.on_front:
+            position=self.front_row.find_object(unit)
+            if position==-1:
+                raise ValueError("FATAL! Unit not in front row")
+            self.front_row.remove(position)
+            if self.front_row.is_empty():
+                self.front_control=None
+        else:
+            position=self.player_rows[player_id].find_object(unit)
+            if position==-1:
+                raise ValueError("FATAL! Unit not in player row")
+            self.player_rows[player_id].remove(position)

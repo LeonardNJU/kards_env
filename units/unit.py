@@ -1,4 +1,3 @@
-from signal import raise_signal
 from const import SpecialAbility, UnitType
 from object import Object
 
@@ -21,9 +20,10 @@ class Unit(Object):
     def __str__(self):
         return f"{self.name}({self.ATK}/{self.HP})"
     
-    def set_putting(self,player:int,turn:int):
+    def set_putting(self, game, player:int):
+        self.game=game
         self.owner=player
-        self.putting_turn=turn
+        self.putting_turn=game.turn
         self.is_moved=False
         self.have_attacked=0
     
@@ -61,6 +61,11 @@ class Unit(Object):
     
     def attack(self, target:Object):
         target.hurt(self.ATK, self)
-        if SpecialAbility.SHOCK not in self.ability:
+        if SpecialAbility.SHOCK not in self.ability and isinstance(target, Unit):
             self.hurt(target.ATK, target)
         self.have_attacked+=1
+    
+    def die(self):
+        # notify the game the unit is dead
+        self.game.field.remove_unit(self.owner, self)
+        del self
