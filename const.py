@@ -3,6 +3,12 @@ from enum import Enum
 class Nation(Enum):
     USA = "USA"
     SOVIET = "SOVIET"
+    JAPAN= "JAPAN"
+    GERMANY= "GERMANY"
+    UK = "UK"
+    
+    ITALY= "ITALY"
+    
     
 class CardType(Enum):
     INFANTRY = "INFANTRY"

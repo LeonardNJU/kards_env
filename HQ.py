@@ -3,9 +3,8 @@ from object import Object
 
 
 class HeadQuarters(Object):
-    def __init__(self,state):
-        super().__init__(HP=20)
-        self.state=state
+    def __init__(self,nation):
+        super().__init__(20,nation)
     def set_player(self, player):
         """_summary_
 

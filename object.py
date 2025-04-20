@@ -1,9 +1,10 @@
-from const import DamageSource
+from const import DamageSource, Nation
 
 
 class Object:
-    def __init__(self,HP):
+    def __init__(self,HP, nation:Nation):
         self.HP=HP
+        self.nation=nation
     def hurt(self, damage:int, src=None):
         '''
         hurt the object

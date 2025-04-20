@@ -2,4 +2,10 @@
   cost: 1
   type: INFANTRY
   nation: SOVIET
-  effect: light_infantry
+  effect: 部署轻步兵
+
+- name: 习致野
+  cost: 1
+  type: INFANTRY
+  nation: JAPAN
+  effect: 部署习致野

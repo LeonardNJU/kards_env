@@ -1,4 +1,3 @@
-from __future__ import annotations
 from HQ import HeadQuarters
 from const import Nation
 from field import Field
@@ -66,7 +65,6 @@ class Game:
                 assert len(reschedule)<=len(self.players[player_id].hand)
                 assert all([i in range(len(self.players[player_id].hand)) for i in reschedule])
                 for i in reschedule[::-1]:
-                    # TODO: check: not sure it can pop right card.
                     card=self.players[player_id].hand.pop(i)
                     self.players[player_id].deck.random_add(card)
 
@@ -116,26 +114,3 @@ class Game:
         self.turn_starting_phase(active_player_id)
         self.players[self.active_player_id].turn(self)
         self.turn_end_phase(active_player_id)
-
-def main(pl1,pl2):
-    game = Game([pl1, pl2])
-    # game.reschedule_phase(1)
-    # game.reschedule_phase(2)
-    while True:
-        game.turn+=1
-        game.turn_phase(1)
-        game.turn_phase(2)
-    
-        
-if __name__=="__main__":
-    # 先把卡组创建写这里
-    cards = load_cards_from_yaml("units/cards.yaml")
-
-    hq1=HeadQuarters(Nation.USA)
-    hq2=HeadQuarters(Nation.USA)
-    player1=Player("Pl1",1,hq1, [cards[0]]*39)
-    player2=Player("Pl2",2,hq2, [cards[0]]*39)
-    hq1.set_player(player1)
-    hq2.set_player(player2)
-    
-    main(player1,player2)

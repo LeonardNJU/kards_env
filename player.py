@@ -27,6 +27,8 @@ class Player:
         self.max_mana=0
         
         self.fatigue=0
+        
+        self.last_order=None
     def draw_card(self):
         self.hand.draw()
     def lose(self):
@@ -35,12 +37,17 @@ class Player:
     def accept_order(self)->Order:
         # accept order from player
         order_str=input("input your order:")
-        try:
-            order=Order(order_str)
-        except Exception as e:
-            print(e)
-            print("Invalid order")
-            return None
+        if order_str=="" and self.last_order is not None:
+            print("Using last order", self.last_order)
+            order=self.last_order
+        else:
+            try:
+                order=Order(order_str)
+                self.last_order=order
+            except Exception as e:
+                print(e)
+                print("Invalid order")
+                return None
         return order
     def inc_fatigue(self):
         self.fatigue+=1

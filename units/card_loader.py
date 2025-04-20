@@ -6,7 +6,7 @@ from .effect import effect_registry
 def load_cards_from_yaml(path: str):
     with open(path, 'r') as f:
         config = yaml.safe_load(f)
-    cards = []
+    card_dict = {}
     for item in config:
         card = Card(
             name=item['name'],
@@ -15,5 +15,5 @@ def load_cards_from_yaml(path: str):
             nation=Nation[item['nation']],
             meta=effect_registry[item['effect']]
         )
-        cards.append(card)
-    return cards
+        card_dict[item['name']] = card
+    return card_dict

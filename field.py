@@ -196,7 +196,7 @@ class Field:
         assert _to[0] in ['e','f'] and int(_to[1]) in range(5), "Invalid position"
         
         if _to[0]=='e':
-            target=self.player_rows[player_id].slots[int(_to[1])]  # attack
+            target=self.player_rows[3-player_id].slots[int(_to[1])]  # attack
         elif _to[0]=='f':
             if self.front_control==player_id or self.front_control==None:
                 self.move_to_front(game,player_id, _from, int(_to[1]))
