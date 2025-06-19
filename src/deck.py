@@ -1,23 +1,26 @@
+from sphinx import ret
 import yaml
 
 from src.card import Card
 from src.constant import DECK_SIZE
 from src.utils.str2obj import str2card_type, str2nation
+from src.utils.logger import setup_logger
 
+logger = setup_logger(__name__)
 
 def load_card_pool(card_pool_filepath: str) -> dict:
-    card_pool = {}
     with open(card_pool_filepath, "r") as file:
         card_pool_str = yaml.safe_load(file)
-    for card_info in card_pool_str:
-        card_pool[card_info["id"]] = Card(
+    return {
+        card_info["id"]: Card(
             card_info["id"],
             card_info["name"],
             str2nation(card_info["nation"]),
             str2card_type(card_info["type"]),
             card_info["kredits"],
         )
-    return card_pool
+        for card_info in card_pool_str
+    }
 
 
 class Deck:
@@ -59,3 +62,7 @@ class Deck:
         assert (
             len(self.cards) == DECK_SIZE
         ), f"Deck size must be exactly {DECK_SIZE} cards, but found {len(self.cards)}."
+
+    def draw(self):
+        logger.debug("Drawing a card from the deck.")
+        return self.cards.pop() if self.cards else None

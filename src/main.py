@@ -13,7 +13,6 @@ def main():
     
     game=Game(alice, bob)
     
-    logger.info(f"Starting game between {alice.name} and {bob.name}")
     game.start()
     
 if __name__ == "__main__":
