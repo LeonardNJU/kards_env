@@ -1,5 +1,5 @@
-from card import Card
-from constant import MAX_HAND_SIZE
+from .card import Card
+from .constant import MAX_HAND_SIZE
 
 
 class Hand:
@@ -22,3 +22,11 @@ class Hand:
     def is_full(self) -> bool:
         """Check if the hand is full."""
         return len(self.cards) >= MAX_HAND_SIZE
+
+    def show(self):
+        for i, card in enumerate(self.cards):
+            print(f"#{i}: {card.name} ({card.nation}, {card.type}, {card.kredits}K)")
+    
+    def size(self) -> int:
+        """Get the number of cards in the hand."""
+        return len(self.cards)

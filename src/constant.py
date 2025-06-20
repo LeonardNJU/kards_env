@@ -1,2 +1,15 @@
+# deck.py
 DECK_SIZE=39
 MAX_HAND_SIZE=9
+
+# HQ.py
+HQ_MAX_HP=20
+
+# field.py
+ROW_SIZE_MAX = 5
+ROW_TOTAL = 3
+FIELD_WIDTH = 40
+
+# player.py
+FIRST_PLAYER_CARDS = 4
+SECOND_PLAYER_CARDS = 5
