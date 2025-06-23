@@ -1,9 +1,7 @@
-from .game import Game
-from .player import Player
+from game.game import Game
+from game.player import Player
 
 def main():
-    # Set up the logger
-
     alice= Player("Alice")
     alice.bind_deck("simulate/deck1.txt")
     bob = Player("Bob")

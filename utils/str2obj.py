@@ -1,4 +1,4 @@
-from src.symbols import CardType, Nation
+from utils.symbols import CardType, Nation
 
 def str2nation(str_nation: str) -> Nation:
     """

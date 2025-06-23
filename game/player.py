@@ -1,8 +1,9 @@
-from .hand import Hand
-from .deck import Deck
-from src.HQ import HQ
+from game.hand import Hand
+from game.deck import Deck
+from object.HQ import HQ
+from action.action import Action
 
-from src.utils.logger import setup_logger
+from utils.logger import setup_logger
 logger=setup_logger(__name__)
 
 class Player:
@@ -19,21 +20,22 @@ class Player:
         """Bind a deck to the player."""
         self.deck = Deck(deck_filepath)
         
-    def draw_card(self) -> None:
+    def draw_card(self, num: int=1) -> None:
         """Draw a card from the deck and add it to the player's hand."""
         if self.deck is None:
             logger.error("Attempted to draw a card without a bound deck.")
             raise RuntimeError("Player deck is not bound. Please bind a deck before drawing cards.")
-        if card := self.deck.draw():
-            if self.hand.add_card(card):
-                logger.info(f"{self.name}'s hand is full, card {card} was not added to the hand.")
+        for _ in range(num):
+            if card := self.deck.draw():
+                if self.hand.add_card(card):
+                    logger.info(f"{self.name}'s hand is full, card {card} was not added to the hand.")
+                else:
+                    logger.info(f"{self.name} drew a card: {card}")
             else:
-                logger.info(f"{self.name} drew a card: {card}")
-        else:
-            logger.info(f"{self.name}'s deck is empty, no card drawn.")
-            self.fatigue += 1
-            logger.info(f"{self.name} has taken {self.fatigue} fatigue damage.")
-            self.HQ.take_damage(self.fatigue)
+                logger.info(f"{self.name}'s deck is empty, no card drawn.")
+                self.fatigue += 1
+                logger.info(f"{self.name} has taken {self.fatigue} fatigue damage.")
+                self.HQ.take_damage(self.fatigue)
 
     def place_HQ(self):
         """create HQ and added to registry, waiting to be placed on the field."""
@@ -49,8 +51,7 @@ class Player:
         assert self.deck is not None, "Deck must be bound before rescheduling phase."
         self.deck.shuffle()  # Shuffle the deck before drawing cards
         
-        for _ in range(cards_to_draw):
-            self.draw_card()
+        self.draw_card(cards_to_draw)
         self.hand.show()
         cards_to_redraw = sorted([int(num.strip()) for num in input("input the numbers of cards to redraw, e.g. 1,4,5 (-1 to skip): ").split(",")])
         if cards_to_redraw and cards_to_redraw[0] != -1:
@@ -67,4 +68,7 @@ class Player:
             logger.info(f"{self.name} chose not to redraw any cards.")
         print(f"{self.name} finished rescheduling phase.")
         self.hand.show()
+        
+    def choose_action(self)-> Action:
+        return Action(input(f"{self.name}, please type your command: "))
         

@@ -1,5 +1,5 @@
-from .card import Card
-from .constant import MAX_HAND_SIZE
+from card.card import Card
+from utils.constant import MAX_HAND_SIZE
 
 
 class Hand:

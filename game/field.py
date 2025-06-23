@@ -1,6 +1,6 @@
-from .constant import FIELD_WIDTH, ROW_SIZE_MAX, ROW_TOTAL
-from .object import Object
-from src.utils.logger import setup_logger
+from utils.constant import FIELD_WIDTH, ROW_SIZE_MAX, ROW_TOTAL
+from object.object import Object
+from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

@@ -1,10 +1,10 @@
 import yaml
 
-from src.card import Card
-from src.constant import DECK_SIZE
-from src.utils.str2obj import str2card_type, str2nation
-from src.symbols import Nation
-from src.utils.logger import setup_logger
+from card.card import Card
+from utils.constant import DECK_SIZE
+from utils.str2obj import str2card_type, str2nation
+from utils.symbols import Nation
+from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
@@ -44,7 +44,7 @@ class Deck:
         ), "Deck file must start with 'Allied ' followed by the Allied nation name."
         self.allied = str2nation(lines[1].strip().split(" ")[1])
 
-        card_pool = load_card_pool("resources/card_pool.yaml")
+        card_pool = load_card_pool("asset/card_pool.yaml")
         for line in lines[2:]:
             card_num, quantity = line.strip().split(" ")
             assert (

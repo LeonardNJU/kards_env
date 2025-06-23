@@ -1,4 +1,4 @@
-from src.symbols import CardType, Nation
+from utils.symbols import CardType, Nation
 
 
 class Card:
