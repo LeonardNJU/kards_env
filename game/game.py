@@ -32,6 +32,5 @@ class Game:
         logger.info("Combat phase started")
         while True:
             self.content.start_player_turn()
-            # player actions would be handled here
-            
+            self.content.act_player_turn()
             self.content.end_player_turn()

@@ -1,26 +1,11 @@
-import yaml
-
 from card.card import Card
+from utils.card_registry import CardRegistry
 from utils.constant import DECK_SIZE
-from utils.str2obj import str2card_type, str2nation
+from utils.str2obj import str2nation
 from utils.symbols import Nation
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
-
-def load_card_pool(card_pool_filepath: str) -> dict:
-    with open(card_pool_filepath, "r") as file:
-        card_pool_str = yaml.safe_load(file)
-    return {
-        card_info["id"]: Card(
-            card_info["id"],
-            card_info["name"],
-            str2nation(card_info["nation"]),
-            str2card_type(card_info["type"]),
-            card_info["kredits"],
-        )
-        for card_info in card_pool_str
-    }
 
 
 class Deck:
@@ -44,21 +29,16 @@ class Deck:
         ), "Deck file must start with 'Allied ' followed by the Allied nation name."
         self.allied = str2nation(lines[1].strip().split(" ")[1])
 
-        card_pool = load_card_pool("asset/card_pool.yaml")
+        card_registry = CardRegistry("asset/cards")
         for line in lines[2:]:
-            card_num, quantity = line.strip().split(" ")
-            assert (
-                card_num.startswith("#")
-                and card_num[1:].isdigit()
-                and quantity.isdigit()
-            ), "Each card line must be in the format '#<card_number> <quantity>'."
-            card_num = int(card_num[1:])
+            quantity, name = line.strip().split(" ", 1)
+            assert quantity.isdigit(), "Each card line must be in the format '<quantity> <card_name>'."
             quantity = int(quantity)
             for _ in range(quantity):
-                if card_num in card_pool:
-                    self.cards.append(card_pool[card_num])
+                if card:= card_registry.get_card_by_name(name):
+                    self.cards.append(card)
                 else:
-                    raise ValueError(f"Card number {card_num} not found in card pool.")
+                    raise ValueError(f"Card `{name}` not found in card pool.")
         assert (
             len(self.cards) == DECK_SIZE
         ), f"Deck size must be exactly {DECK_SIZE} cards, but found {len(self.cards)}."

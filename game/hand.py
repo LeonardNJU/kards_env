@@ -30,3 +30,18 @@ class Hand:
     def size(self) -> int:
         """Get the number of cards in the hand."""
         return len(self.cards)
+    
+    def get_card_by_idx(self, card_id: str) -> Card:
+        """Get a card by its index in the hand.
+
+        Args:
+            card_id (str): The index of the card.
+
+        Returns:
+            Card: The card at the specified index.
+        """
+        try:
+            idx = int(card_id)
+            return self.cards[idx]
+        except (ValueError, IndexError) as e:
+            raise ValueError(f"Invalid card index: {card_id}") from e

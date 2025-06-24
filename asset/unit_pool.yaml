@@ -1,0 +1,8 @@
+- name: 15th Cavalry Regiment
+  nation: JAPAN
+  type: Infantry
+  atk: 2
+  hp: 1
+  oil: 0
+  sp:
+  - blitz

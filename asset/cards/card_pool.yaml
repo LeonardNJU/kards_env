@@ -1,0 +1,13 @@
+- name: "15th Cavalry Regiment"
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effect: 
+  - action: deploy
+    unit: "15th Cavalry Regiment"
+  
+- name: "1st Signal Regiment"
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  

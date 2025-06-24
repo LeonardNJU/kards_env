@@ -1,3 +1,4 @@
+from action.action import ActionType, Action
 from game.field import Field
 from game.player import Player
 from utils.constant import FIELD_WIDTH
@@ -30,11 +31,19 @@ class GameContext:
         if self.current_turn != 1 or self.current_player_id != 0:
             self.players[self.current_player_id].draw_card()
             
-        self.show()
         
-        while True:
-            action=self.players[self.current_player_id].choose_action()
-            # until ends.
+    def act_player_turn(self):
+        """Handle the actions of the current player during their turn."""
+        action=None
+        while not action or action.type != ActionType.END_TURN:
+            self.show()
+            if action := self.players[self.current_player_id].choose_action():
+                try:
+                    self.execute_action(action)
+                except Exception as e:
+                    logger.info(f"Error while executing action: {e}")
+                    continue
+            
     
     def end_player_turn(self):
         """End the current player's turn."""
@@ -55,6 +64,24 @@ class GameContext:
         print(f"[{us.kredits}/{us.kredits_slot}] {us.name}")
         us.hand.show()
         print("#" * FIELD_WIDTH)
+
+    def execute_action(self, action: Action):
+        """Executes the given action.
+
+        Args:
+            action (Action): The action to be executed.
+        """
+        match action.type:
+            case ActionType.END_TURN:
+                pass
+            case ActionType.PLAY_CARD:
+                
+            case ActionType.ATTACK:
+                self.field.attack(action.attacker_id, action.target_id)
+            case ActionType.MOVE_OBJECT:
+                self.field.move_object(action.object_id, action.new_position)
+            case _:
+                raise ValueError(f"Unknown action type: {action.type}")
 
 def get_opponent_player_id(current_player_id: int) -> int:
     """Returns the opponent's player ID."""
