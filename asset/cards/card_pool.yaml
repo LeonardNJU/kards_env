@@ -2,12 +2,15 @@
   nation: JAPAN
   type: Infantry
   kredits: 1
-  effect: 
+  effects: 
   - action: deploy
     unit: "15th Cavalry Regiment"
   
-- name: "1st Signal Regiment"
+- name: "33rd Recon"
   nation: JAPAN
   type: Infantry
   kredits: 1
+  effects: 
+  - action: deploy
+    unit: "33rd Recon"
   

@@ -6,3 +6,16 @@
   oil: 0
   sp:
   - blitz
+
+- name: 33rd Recon
+  nation: JAPAN
+  type: Infantry
+  atk: 1
+  hp: 2
+  oil: 1
+  abilities:
+  - trigger: on_damaged
+    effect: 
+    - action: draw_card
+      target: self
+      count: 1

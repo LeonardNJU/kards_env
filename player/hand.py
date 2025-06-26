@@ -45,3 +45,14 @@ class Hand:
             return self.cards[idx]
         except (ValueError, IndexError) as e:
             raise ValueError(f"Invalid card index: {card_id}") from e
+    
+    def remove_card(self, card: Card) -> None:
+        """Remove a card from the hand.
+
+        Args:
+            card (Card): The card to be removed.
+        """
+        if card in self.cards:
+            self.cards.remove(card)
+        else:
+            raise ValueError(f"Card {card.name} not found in hand.")

@@ -1,7 +1,10 @@
 from action.action import ActionType, Action
+from event.event_manager import EventManager
 from game.field import Field
-from game.player import Player
+from player.player import Player
 from utils.constant import FIELD_WIDTH
+from event.event import Event, EventType
+from card.card import Card
 
 from utils.logger import setup_logger
 logger = setup_logger(__name__)
@@ -9,27 +12,35 @@ logger = setup_logger(__name__)
 class GameContext:
     def __init__(self, player1 : Player, player2 : Player) -> None:
         self.players = [player1, player2]
-        self.field=Field()
+        self.field = Field()
         self.current_turn = 0  
         self.current_player_id = 0
+        self.event_manager=EventManager()
         
     def place_HQ(self):
         """Place HQ for both players on the field."""
         self.players[0].place_HQ()
+        self.players[0].HQ.bind_owner(0)
         self.players[1].place_HQ()
+        self.players[1].HQ.bind_owner(1)
         self.field.insert_object(self.players[0].HQ, 0)
         self.field.insert_object(self.players[1].HQ, 2)
         
     def start_player_turn(self):
         """Start the current player's turn."""
-        logger.info(f"Player {self.players[self.current_player_id].name}'s turn starts.")
+        player= self.players[self.current_player_id]
+        logger.info(f"Player {player.name}'s turn starts.")
         # A new game turn
         if self.current_player_id == 0:
            self.current_turn += 1
 
+        # add kredits slot until the max slot is reached
+        player.add_kredits_slot()
+        player.refill_kredits()
+        
         # except the first turn, each player draws a card at the start of their turn
         if self.current_turn != 1 or self.current_player_id != 0:
-            self.players[self.current_player_id].draw_card()
+            player.draw_card()
             
         
     def act_player_turn(self):
@@ -58,15 +69,16 @@ class GameContext:
         opponent = self.players[get_opponent_player_id(self.current_player_id)]
         us = self.players[self.current_player_id]
         print(
-            f"[{opponent.kredits}/{opponent.kredits_slot}] {opponent.name}  -  {opponent.hand.size()} cards"
+            f"[{opponent.kredits}/{opponent.kredits_slot}] {opponent.name}  -  {opponent.card_manager.get_hand_size()} cards"
         )
         self.field.show(self.current_player_id)
         print(f"[{us.kredits}/{us.kredits_slot}] {us.name}")
-        us.hand.show()
+        us.card_manager.show_hand()
         print("#" * FIELD_WIDTH)
 
     def execute_action(self, action: Action):
         """Executes the given action.
+        Will check if the action is valid and then perform it on the game field.
 
         Args:
             action (Action): The action to be executed.
@@ -75,14 +87,37 @@ class GameContext:
             case ActionType.END_TURN:
                 pass
             case ActionType.PLAY_CARD:
-                
+                self.execute_play_card(action)
             case ActionType.ATTACK:
-                self.field.attack(action.attacker_id, action.target_id)
-            case ActionType.MOVE_OBJECT:
-                self.field.move_object(action.object_id, action.new_position)
+                pass
+                # self.field.attack(action.attacker_id, action.target_id)
+            case ActionType.MOVE:
+                pass
+                # self.field.move_object(action.object_id, action.new_position)
             case _:
                 raise ValueError(f"Unknown action type: {action.type}")
 
+    def execute_play_card(self, action: Action):
+        player = self.players[self.current_player_id]
+
+        # checkers
+        if player.kredits < action.card.kredits:
+            raise ValueError("Not enough kredits to play this card.")
+
+        self.play_card(action)
+        self.event_manager.dispatch(Event(EventType.CARD_PLAYED, {"owner_id": self.current_player_id, "card": action.card}))
+        player.kredits -= action.card.kredits
+        player.card_manager.use_hand_card(action.card)
+
+    def play_card(self, action: Action):
+        # [TODO]
+        for ef in action.card.effects:
+            match ef["action"]:
+                case "deploy":
+                   self.field 
+            
+        
+        
 def get_opponent_player_id(current_player_id: int) -> int:
     """Returns the opponent's player ID."""
     return 1 - current_player_id

@@ -1,13 +1,11 @@
-class Object:
-    def __init__(self, name:str, HP:int):
-        """Initialize an object with a name and hit points (HP).
+from dataclasses import dataclass
 
-        Args:
-            name (str): The name of the object.
-            HP (int): The hit points of the object.
-        """
-        self.name = name
-        self.HP = HP
+
+@dataclass
+class Object:
+    name: str
+    HP: int
+    
     def take_damage(self, damage:int) -> int:
         """Reduce the object's HP by the specified damage amount.
 
@@ -22,3 +20,6 @@ class Object:
     
     def __str__(self) -> str:
         return f"[{self.name}({self.HP})]"
+
+    def bind_owner(self, owner_id: int):
+        self.owner = owner_id

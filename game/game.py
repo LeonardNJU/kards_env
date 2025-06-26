@@ -1,7 +1,7 @@
 from game.context import GameContext
 from utils.constant import FIELD_WIDTH, FIRST_PLAYER_CARDS, SECOND_PLAYER_CARDS
 from game.field import Field
-from game.player import Player
+from player.player import Player
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)

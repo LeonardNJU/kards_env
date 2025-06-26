@@ -1,7 +1,9 @@
 from enum import Enum
-from venv import logger
+from player.hand import Hand
 
-from game.hand import Hand
+from utils.logger import setup_logger
+logger = setup_logger(__name__)
+
 
 class ActionType(Enum):
     PLAY_CARD = "play_card"
@@ -48,7 +50,7 @@ class Action:
                     raise ValueError(f"Invalid attack command: {commands[0]} {self.args}")
                 self.attacker_idx = int(self.args[0])
                 self.defender_idx = int(self.args[1])
-            case "e" | "et":
+            case "e" | "end":
                 self.type = ActionType.END_TURN
                 if len(self.args) != 0:
                     logger.warning(f"Invalid end turn command: {commands[0]} {self.args}")
