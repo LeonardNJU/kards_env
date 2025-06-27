@@ -1,7 +1,6 @@
 from card.card import Card
-from utils.card_registry import CardRegistry
+from utils.card_registry import card_registry
 from utils.constant import DECK_SIZE
-from utils.str2obj import str2nation
 from utils.symbols import Nation
 from utils.logger import setup_logger
 
@@ -22,20 +21,19 @@ class Deck:
         assert lines[0].startswith(
             "HQ "
         ), "Deck file must start with 'HQ ' followed by the HQ nation name."
-        self.host = str2nation(lines[0].strip().split(" ")[1])
+        self.host = Nation.from_str(lines[0].strip().split(" ")[1])
 
         assert lines[1].startswith(
             "Allied "
         ), "Deck file must start with 'Allied ' followed by the Allied nation name."
-        self.allied = str2nation(lines[1].strip().split(" ")[1])
+        self.allied = Nation.from_str(lines[1].strip().split(" ")[1])
 
-        card_registry = CardRegistry("asset/cards")
         for line in lines[2:]:
             quantity, name = line.strip().split(" ", 1)
             assert quantity.isdigit(), "Each card line must be in the format '<quantity> <card_name>'."
             quantity = int(quantity)
             for _ in range(quantity):
-                if card:= card_registry.get_card_by_name(name):
+                if card := card_registry.get_card_by_name(name):
                     self.cards.append(card)
                 else:
                     raise ValueError(f"Card `{name}` not found in card pool.")

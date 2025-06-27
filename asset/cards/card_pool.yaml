@@ -5,6 +5,10 @@
   effects: 
   - action: deploy
     unit: "15th Cavalry Regiment"
+  params:
+  - name: deploy_position
+    type: int
+    desc: deploy position (0-4)
   
 - name: "33rd Recon"
   nation: JAPAN

@@ -4,14 +4,14 @@ from typing import Any, Dict, List
 from object.object import Object
 from utils.symbols import Nation, UnitType
 
-
 @dataclass
 class Unit(Object):
+    id: str
     name: str
     nation: Nation
     type: UnitType
     HP: int
-    attack: int
+    atk: int
     oil: int
 
     sp: List[str] = field(default_factory=list)

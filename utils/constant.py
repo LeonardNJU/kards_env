@@ -1,7 +1,4 @@
 # deck.py
-from tkinter.tix import REAL
-
-
 DECK_SIZE=39
 MAX_HAND_SIZE=9
 

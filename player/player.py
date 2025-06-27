@@ -53,14 +53,18 @@ class Player:
 
         self.draw_card(cards_to_draw)
         self.card_manager.show_hand()
-        cards_to_redraw = sorted(
-            [
-                int(num.strip())
-                for num in input(
-                    "input the numbers of cards to redraw, e.g. 1,4,5 (-1 to skip): "
-                ).split(",")
-            ]
-        )
+        try:
+            cards_to_redraw = sorted(
+                [
+                    int(num.strip())
+                    for num in input(
+                        "input the numbers of cards to redraw, e.g. 1,4,5 (-1 to skip): "
+                    ).split(",")
+                ]
+            )
+        except ValueError as e:
+            logger.warning(f"Invalid input for cards to redraw: {e}")
+            cards_to_redraw = []
         if cards_to_redraw and cards_to_redraw[0] != -1:
             cards_to_redraw = [
                 num for num in cards_to_redraw if len(cards_to_redraw) >= num >= 0

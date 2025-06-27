@@ -6,27 +6,29 @@ class Nation(Enum):
     GERMANY = "Germany"
     SOVIET = "Soviet Union"
     UK = "United Kingdom"
-    def from_str(cls, str_nation: str) :
+    @staticmethod
+    def from_str(str_nation: str) :
         match str_nation.strip().upper():
             case "USA":
-                return cls.USA
+                return Nation.USA
             case "JAPAN":
-                return cls.JAPAN
+                return Nation.JAPAN
             case "GERMANY":
-                return cls.GERMANY
+                return Nation.GERMANY
             case "SOVIET":
-                return cls.SOVIET
+                return Nation.SOVIET
             case "UK":
-                return cls.UK
+                return Nation.UK
             case _:
                 raise ValueError(f"Invalid nation name: {str_nation}. Must be one of {list(Nation)}.")
     
 class CardType(Enum):
     INFANTRY = "Infantry"
-    def from_str(cls, str_type: str) :
+    @staticmethod
+    def from_str(str_type: str) :
         match str_type.strip().upper():
             case "INFANTRY":
-                return cls.INFANTRY
+                return CardType.INFANTRY
             case _:
                 raise ValueError(f"Invalid card type: {str_type}. Must be 'Infantry'.")
     
@@ -34,14 +36,15 @@ class UnitType(Enum):
     INFANTRY = "Infantry"
     ARMOR = "Armor"
     ARTILLERY = "Artillery"
-    def from_str(cls, str_type: str) :
+    @staticmethod
+    def from_str(str_type: str) :
         match str_type.strip().upper():
             case "INFANTRY":
-                return cls.INFANTRY
+                return UnitType.INFANTRY
             case "ARMOR":
-                return cls.ARMOR
+                return UnitType.ARMOR
             case "ARTILLERY":
-                return cls.ARTILLERY
+                return UnitType.ARTILLERY
             case _:
                 raise ValueError(f"Invalid unit type: {str_type}. Must be one of {list(UnitType)}.")
         

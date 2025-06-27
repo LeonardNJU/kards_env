@@ -43,3 +43,5 @@ class CardRegistry:
         except Exception as e:
             logger.error(f"Invalid card name: {name}. Error: {e}")
             return None
+
+card_registry = CardRegistry("asset/cards")

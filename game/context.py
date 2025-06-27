@@ -4,7 +4,7 @@ from game.field import Field
 from player.player import Player
 from utils.constant import FIELD_WIDTH
 from event.event import Event, EventType
-from card.card import Card
+from utils.unit_registry import unit_registry 
 
 from utils.logger import setup_logger
 logger = setup_logger(__name__)
@@ -32,7 +32,7 @@ class GameContext:
         logger.info(f"Player {player.name}'s turn starts.")
         # A new game turn
         if self.current_player_id == 0:
-           self.current_turn += 1
+            self.current_turn += 1
 
         # add kredits slot until the max slot is reached
         player.add_kredits_slot()
@@ -51,8 +51,7 @@ class GameContext:
             if action := self.players[self.current_player_id].choose_action():
                 try:
                     self.execute_action(action)
-                except Exception as e:
-                    logger.info(f"Error while executing action: {e}")
+                except Exception:
                     continue
             
     
@@ -94,6 +93,9 @@ class GameContext:
             case ActionType.MOVE:
                 pass
                 # self.field.move_object(action.object_id, action.new_position)
+            case ActionType.SURRENDER:
+                logger.info(f"Player {self.players[self.current_player_id].name} has surrendered.")
+                self.winning(get_opponent_player_id(self.current_player_id))
             case _:
                 raise ValueError(f"Unknown action type: {action.type}")
 
@@ -102,6 +104,7 @@ class GameContext:
 
         # checkers
         if player.kredits < action.card.kredits:
+            logger.warning(f"Player {player.name} tried to play a card with insufficient kredits: {action.card.name}")
             raise ValueError("Not enough kredits to play this card.")
 
         self.play_card(action)
@@ -110,12 +113,21 @@ class GameContext:
         player.card_manager.use_hand_card(action.card)
 
     def play_card(self, action: Action):
-        # [TODO]
         for ef in action.card.effects:
             match ef["action"]:
                 case "deploy":
-                   self.field 
-            
+                    unit = unit_registry.get_unit_by_name(ef["unit"])
+                    if "deploy_position" not in action.card_args or not isinstance(action.card_args["deploy_position"], int):
+                        logger.error(f"Invalid deploy position: {action.card_args['deploy_position']}")
+                        raise ValueError(f"Invalid deploy position: {action.card_args['deploy_position']}")
+                    self.field.insert_object(unit, Field.player_id_to_row(self.current_player_id), action.card_args["deploy_position"])
+                    unit.bind_owner(self.current_player_id)
+                    
+    def winning(self, winner_id: int):
+        """Declare the winner of the game."""
+        logger.info(f"Player {self.players[winner_id].name} wins!")
+        exit(0)
+
         
         
 def get_opponent_player_id(current_player_id: int) -> int:

@@ -2,7 +2,7 @@
   nation: JAPAN
   type: Infantry
   atk: 2
-  hp: 1
+  HP: 1
   oil: 0
   sp:
   - blitz
@@ -11,7 +11,7 @@
   nation: JAPAN
   type: Infantry
   atk: 1
-  hp: 2
+  HP: 2
   oil: 1
   abilities:
   - trigger: on_damaged

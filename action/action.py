@@ -10,6 +10,7 @@ class ActionType(Enum):
     MOVE = "move"
     ATTACK = "attack"
     END_TURN = "end_turn"
+    SURRENDER = "surrender"
 
     def __str__(self):
         return self.value
@@ -33,7 +34,8 @@ class Action:
             case "p" | "pl":
                 self.type = ActionType.PLAY_CARD
                 self.card = hand.get_card_by_idx(self.args[0])
-                self.card_args = self.args[1:] if len(self.args) > 1 else []
+                self.card_str_args = self.args[1:] if len(self.args) > 1 else []
+                self.card_args = self.card.args_bind(self.card_str_args)
             case "m" | "mv":
                 self.type = ActionType.MOVE
                 if commands[0] == 'm' and len(self.args) == 1: # shorthand for 'mv xx 5'
@@ -55,6 +57,8 @@ class Action:
                 if len(self.args) != 0:
                     logger.warning(f"Invalid end turn command: {commands[0]} {self.args}")
                     raise ValueError(f"Invalid end turn command: {commands[0]} {self.args}")
+            case "surrender":
+                self.type = ActionType.SURRENDER
             case _:
                 logger.warning(f"Unknown action command: {commands[0]}")
                 raise ValueError(f"Unknown action command: {commands[0]}")
