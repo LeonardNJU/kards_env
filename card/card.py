@@ -5,7 +5,6 @@ from utils.symbols import CardType, Nation
 from utils.logger import setup_logger
 logger = setup_logger(__name__)
 
-
 @dataclass
 class Card:
     id: int

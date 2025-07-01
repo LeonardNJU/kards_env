@@ -1,7 +1,7 @@
 import logging
 from colorlog import ColoredFormatter
 
-def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
+def setup_logger(name: str, level: int = logging.DEBUG) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(level)
     handler = logging.StreamHandler()

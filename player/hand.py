@@ -1,7 +1,6 @@
 from card.card import Card
 from utils.constant import MAX_HAND_SIZE
 
-
 class Hand:
     def __init__(self) -> None:
         self.cards = []

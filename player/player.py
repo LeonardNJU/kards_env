@@ -4,6 +4,7 @@ from action.action import Action
 from player.card_manager import CardManager, DrawResultType
 from utils.constant import NORMAL_MAX_KREDITS_SLOT
 from utils.logger import setup_logger
+from ui.utils import show_banner
 
 logger = setup_logger(__name__)
 
@@ -47,8 +48,8 @@ class Player:
         return self.HQ
 
     def reschedule_phase(self, cards_to_draw: int = 0) -> None:
-        """Reschedule the player's phase, e.g., draw cards and redraw."""
-        logger.info(f"{self.name} in rescheduling phase.")
+        """Reschedule phase, draw cards and redraw."""
+        show_banner(f"{self.name} Rescheduling Phase")
         self.card_manager.shuffle_deck()  # Shuffle the deck before drawing cards
 
         self.draw_card(cards_to_draw)
@@ -65,6 +66,7 @@ class Player:
         except ValueError as e:
             logger.warning(f"Invalid input for cards to redraw: {e}")
             cards_to_redraw = []
+
         if cards_to_redraw and cards_to_redraw[0] != -1:
             cards_to_redraw = [
                 num for num in cards_to_redraw if len(cards_to_redraw) >= num >= 0
@@ -75,27 +77,33 @@ class Player:
                 try:
                     self.card_manager.put_hand_card_back_to_deck_by_idx(num)
                 except IndexError as e:
-                    logger.info(f"Error while redrawing card: {e}")
+                    logger.warning(f"Error while redrawing card: {e}")
                     continue
                 self.draw_card()
-                logger.info("redrew a card.")
+                logger.info(f"{self.name} redrew a card.")
         else:
             logger.info(f"{self.name} chose not to redraw any cards.")
-        print(f"{self.name} finished rescheduling phase.")
+        logger.info(f"{self.name} finished rescheduling phase.")
         self.card_manager.show_hand()
 
     def choose_action(self):
         try:
-            return Action(self.card_manager.hand, input(f"{self.name}, please type your command: "))
+            return Action(
+                self.card_manager.hand,
+                input(f"{self.name}, please type your command: "),
+            )
         except Exception:
             # log has done when ValueError is raised in Action
             return None
+
     def add_kredits_slot(self):
         """Add a kredits slot to the player."""
         if self.kredits_slot < NORMAL_MAX_KREDITS_SLOT:
             self.kredits_slot += 1
-            logger.info(f"{self.name} added a kredits slot. Total slots: {self.kredits_slot}")
-            
+            logger.info(
+                f"{self.name} added a kredits slot. Total slots: {self.kredits_slot}"
+            )
+
     def refill_kredits(self):
         """Refill the player's kredits to the maximum slot."""
         self.kredits = self.kredits_slot
