@@ -6,8 +6,8 @@ Allied Germany
 4 Expansion
 1 Desperate Measures
 1 2nd Raiding Brigade
-1 Ki30 ANN
-1 Type96 AA gun
+1 Ki-30 ANN
+1 Type 96 AA gun
 1 Commit the reserves
 2 Type 94 TK Early
 2 KURUME Regiment
@@ -18,5 +18,5 @@ Allied Germany
 1 Out of the mist
 2 Honor
 1 A6M2 Zero
-3 Ki61 Hien
+3 Ki-61 Hien
 4 Duty Bound

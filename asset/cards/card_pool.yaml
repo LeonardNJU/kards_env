@@ -78,228 +78,205 @@
     - name: deploy_position
       type: int
       desc: deploy position (0-4)
-    - name: eliminate_position
+
+- name: "Ki-30 ANN"
+  rarity: 1
+  nation: JAPAN
+  type: Bomber
+  kredits: 3
+  effects:
+    - action: deploy
+      unit: "Ki-30 ANN"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Type 96 AA gun"
+  rarity: 1
+  nation: JAPAN
+  type: Artillery
+  kredits: 3
+  effects:
+    - action: deploy
+      unit: "Type 96 AA gun"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Commit the reserves"
+  rarity: 2
+  nation: JAPAN
+  type: Command
+  kredits: 2
+  effects:
+    - action: eliminate
+      target: enemy_unit
+      condition:
+        type: atk_less_equal_player_max_kredits
+    - action: lose_kredits_slots
+      count: 1
+
+- name: "Type 94 TK Early"
+  rarity: 2
+  nation: JAPAN
+  type: Armor
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "Type 94 TK Early"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "KURUME Regiment"
+  rarity: 2
+  nation: JAPAN
+  type: Infantry
+  kredits: 2
+  effects:
+    - action: deploy
+      unit: "KURUME Regiment"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Kagoshima Regiment"
+  rarity: 2
+  nation: JAPAN
+  type: Infantry
+  kredits: 3
+  effects:
+    - action: deploy
+      unit: "Kagoshima Regiment"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Sendai Regiment"
+  rarity: 2
+  nation: JAPAN
+  type: Infantry
+  kredits: 4
+  effects:
+    - action: deploy
+      unit: "Sendai Regiment"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Type 93"
+  rarity: 3
+  nation: JAPAN
+  type: Armor
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "Type 93"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Ki45 Dragon slayer"
+  rarity: 3
+  nation: JAPAN
+  type: Fighter
+  kredits: 4
+  effects:
+    - action: deploy
+      unit: "Ki45 Dragon slayer"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Out of the mist"
+  rarity: 4
+  nation: JAPAN
+  type: Command
+  kredits: 1
+  effects:
+    - action: damage
+      count: 1
+      target: any_unit
+    - action: register_delayed_trigger
+      trigger: on_destroyed_this_turn
+      target: last_target
+      effect:
+        - action: salvage
+          target: last_target
+  params:
+    - name: target_position
       type: str
-      optional: true
-      desc: eliminate position (fe)(0-4)
+      desc: target position (sfe)(0-4)
 
-- name: "58th Infantry Regiment"
+- name: "Honor"
   rarity: 4
   nation: JAPAN
-  type: Infantry
-  kredits: 1
+  type: Command
+  kredits: 3
+  effects:
+    - action: modify_atk
+      target: self_units
+      count: 4
+    - action: modify_hp
+      target: self_units
+      count: 4
+    - action: register_delayed_trigger
+      trigger: end_turn
+      target: last_target
+      effect:
+        - action: eliminate
+          target: last_target
+  params:
+    - name: target_position
+      type: str
+      desc: target position (sfe)(0-4)
+
+- name: "A6M2 Zero"
+  rarity: 4
+  nation: JAPAN
+  type: Fighter
+  kredits: 5
   effects:
     - action: deploy
-      unit: "33rd Recon"
+      unit: "A6M2 Zero"
   params:
     - name: deploy_position
       type: int
       desc: deploy position (0-4)
 
-- name: "58th Infantry Regiment"
+- name: "Ki-61 Hien"
   rarity: 4
   nation: JAPAN
-  type: Infantry
-  kredits: 1
+  type: Fighter
+  kredits: 5
   effects:
     - action: deploy
-      unit: "33rd Recon"
+      unit: "Ki-61 Hien"
   params:
     - name: deploy_position
       type: int
       desc: deploy position (0-4)
 
-- name: "58th Infantry Regiment"
+- name: "Duty Bound"
   rarity: 4
   nation: JAPAN
-  type: Infantry
+  type: Command
   kredits: 1
   effects:
-    - action: deploy
-      unit: "33rd Recon"
+    - action: modify_atk
+      target: self_units
+      amount_from:
+        type: self_cast_count
+        card_name: "Duty Bound"
   params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
-
-- name: "58th Infantry Regiment"
-  rarity: 4
-  nation: JAPAN
-  type: Infantry
-  kredits: 1
-  effects:
-    - action: deploy
-      unit: "33rd Recon"
-  params:
-    - name: deploy_position
-      type: int
-      desc: deploy position (0-4)
+    - name: target_position
+      type: str
+      desc: target position (sfe)(0-4)
