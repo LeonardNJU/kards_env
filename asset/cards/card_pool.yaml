@@ -1,20 +1,305 @@
 - name: "15th Cavalry Regiment"
+  rarity: 3
   nation: JAPAN
   type: Infantry
   kredits: 1
-  effects: 
-  - action: deploy
-    unit: "15th Cavalry Regiment"
+  effects:
+    - action: deploy
+      unit: "15th Cavalry Regiment"
   params:
-  - name: deploy_position
-    type: int
-    desc: deploy position (0-4)
-  
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
 - name: "33rd Recon"
+  rarity: 2
   nation: JAPAN
   type: Infantry
   kredits: 1
-  effects: 
-  - action: deploy
-    unit: "33rd Recon"
-  
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "58th Infantry Regiment"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "Expansion"
+  rarity: 4
+  nation: JAPAN
+  type: Command
+  kredits: 1
+  effects:
+    - if:
+        condition:
+            type: has_unit
+            side: self
+            nation: JAPAN
+            location: frontline
+        then:
+          - action: draw_card
+            count: 2
+            target: self
+
+- name: "Desperate Measures"
+  rarity: 1
+  nation: JAPAN
+  type: Command
+  kredits: 2
+  effects:
+    - action: damage
+      target: all_enemies_objects
+      count: 2
+    - action: lose_kredits_slots
+      count: 1
+
+- name: "2nd Raiding Brigade"
+  rarity: 1
+  nation: JAPAN
+  type: Infantry
+  kredits: 3
+  effects:
+    - action: deploy
+      unit: "2nd Raiding Brigade"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+    - name: eliminate_position
+      type: str
+      optional: true
+      desc: eliminate position (fe)(0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)
+
+- name: "58th Infantry Regiment"
+  rarity: 4
+  nation: JAPAN
+  type: Infantry
+  kredits: 1
+  effects:
+    - action: deploy
+      unit: "33rd Recon"
+  params:
+    - name: deploy_position
+      type: int
+      desc: deploy position (0-4)

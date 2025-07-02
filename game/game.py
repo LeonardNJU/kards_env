@@ -245,7 +245,7 @@ class Game:
                         )
                     self.field.insert_object(
                         unit,
-                        Field.player_id_to_row(self.current_player_id),
+                        Field.player_id_to_row(),
                         action.card_args["deploy_position"],
                     )
                     unit.bind_owner(self.current_player_id)

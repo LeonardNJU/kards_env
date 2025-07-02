@@ -9,6 +9,7 @@ logger = setup_logger(__name__)
 class Card:
     id: int
     name: str
+    rarity: str
     nation: Nation
     type: CardType
     kredits: int

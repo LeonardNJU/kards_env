@@ -32,11 +32,13 @@ class Deck:
             quantity, name = line.strip().split(" ", 1)
             assert quantity.isdigit(), "Each card line must be in the format '<quantity> <card_name>'."
             quantity = int(quantity)
-            for _ in range(quantity):
-                if card := card_registry.get_card_by_name(name):
-                    self.cards.append(card)
+            if card := card_registry.get_card_by_name(name):
+                if quantity <= card.rarity:
+                    self.cards.extend(card for _ in range(quantity))
                 else:
-                    raise ValueError(f"Card `{name}` not found in card pool.")
+                    raise ValueError(f"Card `{name}` has a rarity of {card.rarity}, but tried to add {quantity} copies.")
+            else:
+                raise ValueError(f"Card `{name}` not found in card pool.")
         assert (
             len(self.cards) == DECK_SIZE
         ), f"Deck size must be exactly {DECK_SIZE} cards, but found {len(self.cards)}."

@@ -8,6 +8,7 @@ HQ_MAX_HP=20
 # field.py
 ROW_SIZE_MAX = 5
 ROW_TOTAL = 3
+FRONT_ROW=1
 FIELD_WIDTH = 40
 
 # player.py
