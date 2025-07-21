@@ -1,5 +1,9 @@
 import socket
 import threading
+from typing import Callable
+from utils.logger import setup_logger
+
+logger=setup_logger('server')
 
 class Server:
     def __init__(self, host='0.0.0.0', port=12345):
@@ -8,15 +12,15 @@ class Server:
         self.server.bind((host, port))
         self.server.listen(2)
         self.port = self.server.getsockname()[1]
-        print(f"服务器启动: {host}:{self.port}")
+        logger.info(f"服务器启动: {host}:{self.port}")
 
         self.players = {}  # player_id -> (conn, addr)
         self.lock = threading.Lock()
         self.running = True
 
         # 游戏内核回调
-        self.on_game_start = None
-        self.on_player_disconnect = None
+        self.on_player_join: Callable = None
+        self.on_player_disconnect : Callable = None
         self.on_player_input = None
 
     def start(self):
@@ -27,13 +31,9 @@ class Server:
             conn, addr = self.server.accept()
             player_id = len(self.players) + 1
             self.players[player_id] = (conn, addr)
-            print(f"玩家 {player_id} 已连接: {addr}")
-            conn.sendall(f"欢迎 Player {player_id}\n".encode())
-
+            logger.info(f"玩家 {player_id} 已连接: {addr}")
+            # TODO: notify the acceptance
             threading.Thread(target=self.handle_player, args=(player_id,), daemon=True).start()
-
-        if len(self.players) == 2 and self.on_game_start:
-            self.on_game_start()
 
     def handle_player(self, player_id):
         conn, addr = self.players[player_id]
@@ -43,11 +43,11 @@ class Server:
                 if not data:
                     break
                 msg = data.decode().strip()
-                print(f"[Player {player_id}] {msg}")
+                logger.info(f"[Player {player_id}] {msg}")
                 if self.on_player_input:
                     self.on_player_input(player_id, msg)
-        except:
-            pass
+        except Exception as e:
+            logger.error(f"Error handling player {player_id}: {e}")
         finally:
             if self.running and self.on_player_disconnect:
                 self.on_player_disconnect(player_id)
@@ -79,12 +79,36 @@ class Server:
 if __name__ == "__main__":
     def game_start():
         print("🎮 游戏开始")
-        server.broadcast("GAME_START")
+        import json
+        server.send_to_player(1, json.dumps({ "state": "PREGAME", "self": { "name": "Player1",
+        "major": "Major1",
+        "allies": "Ally1",
+        "ready": True,
+    },
+    "opponent": {
+        "name": "Player2",
+        "major": "Major2",
+        "allies": "Ally2",
+        "ready": False
+    }
+}))
+        server.send_to_player(2, json.dumps({ "state": "PREGAME", "self": { "name": "Player2",
+        "major": "Major2",
+        "allies": "Ally2",
+        "ready": False
+    },
+    "opponent": {
+        "name": "Player1",
+        "major": "Major1",
+        "allies": "Ally1",
+        "ready": True
+    }
+}))
 
     def player_input(player_id, msg):
         print(f"玩家 {player_id} 输入: {msg}")
         # 示例: echo 回去
-        server.send_to_player(player_id, f"你输入了: {msg}")
+        # server.send_to_player(player_id, f"你输入了: {msg}")
 
     def player_disconnect(player_id):
         print(f"❌ 玩家 {player_id} 断开连接（判定投降）")

@@ -1,6 +1,5 @@
 import socket
 import threading
-import sys
 
 class Client:
     def __init__(self, server_ip=None, server_port=None, on_message=None):
@@ -10,6 +9,8 @@ class Client:
         self.server_ip = server_ip or input("请输入服务器IP: ")
         self.server_port = server_port or int(input("请输入服务器端口: "))
         self.on_message = on_message
+        if not callable(self.on_message):
+            raise ValueError("on_message 必须是一个可调用的函数")
         self.running = True
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,6 +21,15 @@ class Client:
         self.receiver_thread = threading.Thread(target=self.receive_messages, daemon=True)
         self.receiver_thread.start()
 
+    def set_on_message(self, callback):
+        """
+        设置接收消息的回调函数
+        :param callback: 回调函数，接收参数 (message: str)
+        """
+        self.on_message = callback
+        if not callable(self.on_message):
+            raise ValueError("on_message 必须是一个可调用的函数")
+        
     def receive_messages(self):
         """
         后台接收服务器消息并调用回调
